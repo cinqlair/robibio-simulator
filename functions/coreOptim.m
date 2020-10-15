@@ -15,15 +15,12 @@ function [criteria] = coreOptim(x, motors, dataset, start, step, stop)
     feasable = mean(motors.feasable);
     efficiency = mean(motors.efficiency .* motors.feasable);
     
-    
-    inv_input_power  = 1./motors.power.total;
-    inv_input_power(motors.feasable==0)=0;
-    
-    
+        
     %% Optimization criteria
+    criteria = 1-feasable;
     %criteria = 1-efficiency;
-    %criteria = 1-feasable;
-    criteria = 1-mean(inv_input_power);
+    
+    
     
     %% Store data in history
     data = [now, x, feasable, efficiency, criteria];

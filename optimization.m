@@ -16,7 +16,7 @@ load ('dataset/robibio/4.mat');
 
 start = 1;
 step = 10;
-stop = dataset.frames;
+stop = 20000;
 
 
 %% Motor references

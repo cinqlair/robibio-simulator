@@ -1,30 +1,48 @@
-function nPlots = plot_motor_optim_residual(motors)
+function nPlots = plot_motor_power(motors)
 
-    subplot (5,1,1); hold on; grid on;
-    plot (motors.power.left(5,:), 'r');
-    plot (motors.power.right(5,:), 'b');
-    title ('Hip power [W]');
+    nPlots = sum(cell2mat(struct2cell(motors.enable)));
+    plotIndex = 1;
+    
+    if (motors.enable.hip)
+        subplot (nPlots,1,plotIndex); hold on; grid on;
+        plot (motors.power.hip.left, 'r');
+        plot (motors.power.hip.right, 'b');
+        title ('Hip power [W]');
+        plotIndex=plotIndex+1;
+    end
+
+    if (motors.enable.knee)
+        subplot (nPlots,1,plotIndex); hold on; grid on;
+        plot (motors.power.knee.left, 'r');
+        plot (motors.power.knee.right, 'b');
+        title ('Knee power [W]');
+        plotIndex=plotIndex+1;
+    end        
+  
+    if (motors.enable.ankle)
+        subplot (nPlots,1,plotIndex); hold on; grid on;
+        plot (motors.power.ankle.left, 'r');
+        plot (motors.power.ankle.right, 'b');
+        title ('Ankle power [W]');
+        plotIndex=plotIndex+1;
+    end
         
-    subplot (5,1,2); hold on; grid on;
-    plot (motors.power.left(3,:), 'r');
-    plot (motors.power.right(3,:), 'b');
-    title ('Knee power [W]');
+    if (motors.enable.hip_knee)
+        subplot (nPlots,1,plotIndex); hold on; grid on;
+        plot (motors.power.hip_knee.left, 'r');
+        plot (motors.power.hip_knee.right, 'b');
+        title ('Hip-knee power [W]');
+        plotIndex=plotIndex+1;
+    end
     
-    subplot (5,1,3); hold on; grid on;
-    plot (motors.power.left(1,:), 'r');
-    plot (motors.power.right(1,:), 'b');
-    title ('Ankle power [W]');
-
-    subplot (5,1,4); hold on; grid on;
-    plot (motors.power.left(4,:), 'r');
-    plot (motors.power.right(4,:), 'b');
-    title ('Hip-knee power [W]');
     
-    subplot (5,1,5); hold on; grid on;
-    plot (motors.power.left(2,:), 'r');
-    plot (motors.power.right(2,:), 'b');
-    title ('Knee-ankle power [W]');
-
+    if (motors.enable.knee_ankle)        
+        subplot (nPlots,1,plotIndex); hold on; grid on;
+        plot (motors.power.knee_ankle.left, 'r');
+        plot (motors.power.knee_ankle.right, 'b');
+        title ('Knee-ankle power [W]');
+        plotIndex=plotIndex+1;
+    end
 
 end
 

@@ -182,9 +182,11 @@ function [motors] = core(motors, dataset, start, step, stop)
             % Compute maximum available torque on hip and knee
             vector_motor = motors.trajectories.hip_knee.left.shang(:,index) - motors.trajectories.hip_knee.left.trunk(:,index);
             vector_motor_unit = vector_motor/norm(vector_motor);
+            
+            
             % Left hip
             vector_lever = (motors.trajectories.hip_knee.left.trunk(:,index) - [0; 0; 0 ;1] )/ 1000;
-            J = cross (vector_motor_unit(1:3), vector_lever(1:3));
+            J = -cross (vector_motor_unit(1:3), vector_lever(1:3));
             jacobian.left(3,4) = J(3);
             motors.max_torque.hip_knee.hip.left(index) = abs(motors.max_force.hip_knee.left(index) * jacobian.left(3,4));
             % Left knee
@@ -192,12 +194,13 @@ function [motors] = core(motors, dataset, start, step, stop)
             J = -cross (vector_motor_unit(1:3), vector_lever(1:3));
             jacobian.left(2,4) = J(3);
             motors.max_torque.hip_knee.knee.left(index) = abs(motors.max_force.hip_knee.left(index) * jacobian.left(2,4));
+            
 
             vector_motor = motors.trajectories.hip_knee.right.shang(:,index) - motors.trajectories.hip_knee.right.trunk(:,index);
             vector_motor_unit = vector_motor/norm(vector_motor);
             % Right hip
             vector_lever = (motors.trajectories.hip_knee.right.trunk(:,index) - [0; 0; 0 ;1] )/ 1000;
-            J = cross (vector_motor_unit(1:3), vector_lever(1:3));
+            J = -cross (vector_motor_unit(1:3), vector_lever(1:3));
             jacobian.right(3,4) = J(3);
             motors.max_torque.hip_knee.hip.right(index) = abs(motors.max_force.hip_knee.right(index) * jacobian.right(3,4));
             % Right knee
@@ -205,15 +208,15 @@ function [motors] = core(motors, dataset, start, step, stop)
             J = -cross (vector_motor_unit(1:3), vector_lever(1:3));
             jacobian.right(2,4) = J(3);
             motors.max_torque.hip_knee.knee.right(index) = abs(motors.max_force.hip_knee.right(index) * jacobian.right(2,4));
-
-
-
-
         end;
+               
+        
 
         %% Knee-ankle motor (biarticular)
         motors.max_force.knee_ankle.left(index) = 0;
         motors.max_force.knee_ankle.right(index) = 0;
+        
+        
         if (motors.enable.knee_ankle)
 
             % Motor joint coordinates
@@ -221,12 +224,12 @@ function [motors] = core(motors, dataset, start, step, stop)
             motors.trajectories.knee_ankle.right.thigh(:,index)  = T_Hip_to_Knee_Right * [motors.parameters.knee_ankle.thigh ; 0 ; 1];
             motors.trajectories.knee_ankle.left.foot(:,index)    = T_Hip_to_Foot_Left * [motors.parameters.knee_ankle.foot; 0 ; 1];
             motors.trajectories.knee_ankle.right.foot(:,index)   = T_Hip_to_Foot_Right * [motors.parameters.knee_ankle.foot ; 0 ; 1];
-
-
+            
             % Distance between attachment points
-            motors.length.knee_ankle.left(index)                 = norm (motors.trajectories.knee_ankle.left.thigh(:,index) - motors.trajectories.knee_ankle.left.foot(:,index));
+            motors.length.knee_ankle.left(index)                 = norm (motors.trajectories.knee_ankle.left.thigh(:,index)  - motors.trajectories.knee_ankle.left.foot(:,index));
             motors.length.knee_ankle.right(index)                = norm (motors.trajectories.knee_ankle.right.thigh(:,index) - motors.trajectories.knee_ankle.right.foot(:,index));
 
+            
             % Motor maximal force and motor state
             [Force, State] = motors.parameters.knee_ankle.reference(motors.length.knee_ankle.left(index), motors.parameters.knee_ankle.offset);
             motors.max_force.knee_ankle.left(index) = Force;
@@ -236,12 +239,13 @@ function [motors] = core(motors, dataset, start, step, stop)
             motors.max_force.knee_ankle.right(index) = Force;
             motors.state.knee_ankle.right(index) = State;
 
+            
             % Compute maximum available torque on knee and ankle
             vector_motor = motors.trajectories.knee_ankle.left.foot(:,index) - motors.trajectories.knee_ankle.left.thigh(:,index);
             vector_motor_unit = vector_motor/norm(vector_motor);
             % Left knee
-            vector_lever = (motors.trajectories.knee_ankle.left.thigh(:,index) - dataset.trajectories.joints.left.knee(:,i) )/ 1000;
-            J = cross (vector_motor_unit(1:3), vector_lever(1:3));
+            vector_lever = (motors.trajectories.knee_ankle.left.thigh(:,index) - dataset.trajectories.joints.left.knee(:,i) )/1000;
+            J = -cross (vector_motor_unit(1:3), vector_lever(1:3));
             jacobian.left(2,2) = J(3);
             motors.max_torque.knee_ankle.knee.left(index) = abs(motors.max_force.knee_ankle.left(index) * jacobian.left(2,2));
             % Left foot
@@ -250,12 +254,13 @@ function [motors] = core(motors, dataset, start, step, stop)
             jacobian.left(1,2) = J(3);
             motors.max_torque.knee_ankle.ankle.left(index) = abs(motors.max_force.knee_ankle.left(index) * jacobian.left(1,2));
 
+            
             % Compute maximum available torque on knee and ankle
             vector_motor = motors.trajectories.knee_ankle.right.foot(:,index) - motors.trajectories.knee_ankle.right.thigh(:,index);
             vector_motor_unit = vector_motor/norm(vector_motor);
             % Right knee
             vector_lever = (motors.trajectories.knee_ankle.right.thigh(:,index) - dataset.trajectories.joints.right.knee(:,i)  )/ 1000;
-            J = cross (vector_motor_unit(1:3), vector_lever(1:3));
+            J = -cross (vector_motor_unit(1:3), vector_lever(1:3));
             jacobian.right(2,2) = J(3);
             motors.max_torque.knee_ankle.knee.right(index) = abs(motors.max_force.knee_ankle.right(index) * jacobian.right(2,2));
             % Right foot
@@ -265,99 +270,33 @@ function [motors] = core(motors, dataset, start, step, stop)
             motors.max_torque.knee_ankle.ankle.right(index) = abs(motors.max_force.knee_ankle.right(index) * jacobian.right(1,2));
         end;
     
+        %% Reshape and store the Jacobian
         motors.jacobian.left(:,index) = reshape (jacobian.left, [15,1]);
-        motors.jacobian.right(:,index) = reshape (jacobian.right, [15,1]);
-        
+        motors.jacobian.right(:,index) = reshape (jacobian.right, [15,1]);        
         motors.humod_step(index) = i;
         
+  
+        %% Compute motor velocities
+        dqdt_left = [dataset.trajectories.dqdt(5,i) ; dataset.trajectories.dqdt(3,i) ; dataset.trajectories.dqdt(1,i)];
+        motor_velocities_left = transpose(jacobian.left) * dqdt_left;
+        
+        motors.velocity.hip.left(:,index)       = motor_velocities_left(5);
+        motors.velocity.knee.left(:,index)      = motor_velocities_left(3);
+        motors.velocity.ankle.left(:,index)     = motor_velocities_left(1);
+        motors.velocity.hip_knee.left(:,index)  = motor_velocities_left(4);
+        motors.velocity.knee_ankle.left(:,index)= motor_velocities_left(2);
         
         
-        %% Compute motors velocity
-        if (index == 1)
-            motors.velocity.hip.left(:,index)=0;
-            motors.velocity.hip.right(:,index)=0;
-            motors.velocity.knee.left(:,index)=0;
-            motors.velocity.knee.right(:,index)=0;
-            motors.velocity.ankle.left(:,index)=0;
-            motors.velocity.ankle.right(:,index)=0;
-            motors.velocity.hip_knee.left(:,index)=0;
-            motors.velocity.hip_knee.right(:,index)=0;
-            motors.velocity.knee_ankle.left(:,index)=0;
-            motors.velocity.knee_ankle.right(:,index)=0; 
-        else
-            if (motors.enable.hip)
-                motors.velocity.hip.left(:,index) = diff((motors.length.hip.left(end-1:end)/1000)*dataset.frame_rate);
-                motors.velocity.hip.right(:,index) = diff((motors.length.hip.right(end-1:end)/1000)*dataset.frame_rate);
-            else
-                motors.velocity.hip.left(:,index)=0;
-                motors.velocity.hip.right(:,index)=0;        
-            end
-
-            if (motors.enable.knee)
-                motors.velocity.knee.left(:,index) = diff((motors.length.knee.left(end-1:end)/1000)*dataset.frame_rate);
-                motors.velocity.knee.right(:,index) = diff((motors.length.knee.right(end-1:end)/1000)*dataset.frame_rate);
-            else
-                motors.velocity.knee.left(:,index)=0;
-                motors.velocity.knee.right(:,index)=0;                
-            end
-
-            if (motors.enable.ankle)
-                motors.velocity.ankle.left(:,index) = diff((motors.length.ankle.left(end-1:end)/1000)*dataset.frame_rate);
-                motors.velocity.ankle.right(:,index) = diff((motors.length.ankle.right(end-1:end)/1000)*dataset.frame_rate);
-            else
-                motors.velocity.ankle.left(:,index)=0;
-                motors.velocity.ankle.right(:,index)=0;            
-            end
-
-            if (motors.enable.hip_knee)
-                motors.velocity.hip_knee.left(:,index) = diff((motors.length.hip_knee.left(end-1:end)/1000)*dataset.frame_rate);
-                motors.velocity.hip_knee.right(:,index) = diff((motors.length.hip_knee.right(end-1:end)/1000)*dataset.frame_rate);     
-            else
-                motors.velocity.hip_knee.left(:,index)=0;
-                motors.velocity.hip_knee.right(:,index)=0;
-            end
-
-            if (motors.enable.knee_ankle)
-                motors.velocity.knee_ankle.left(:,index) = diff((motors.length.knee_ankle.left(end-1:end)/1000)*dataset.frame_rate);
-                motors.velocity.knee_ankle.right(:,index) = diff((motors.length.knee_ankle.right(end-1:end)/1000)*dataset.frame_rate);
-            else
-                motors.velocity.knee_ankle.left(:,index)=0;
-                motors.velocity.knee_ankle.right(:,index)=0;          
-            end
-        end
-    
-
-                
-        %% Optim for finding a feasable solution
+        dqdt_right = [dataset.trajectories.dqdt(6,i) ; dataset.trajectories.dqdt(4,i) ; dataset.trajectories.dqdt(2,i)];
+        motor_velocities_right = transpose(jacobian.right) * dqdt_right;
         
-%         %% Left leg optimization
-%         options = optimset('Display','off');
-%         T = [dataset.torques.q(1,i) ; dataset.torques.q(3,i) ; dataset.torques.q(5,i)];
-%         ub = [motors.max_force.ankle.left(index) ; motors.max_force.knee_ankle.left(index) ; motors.max_force.knee.left(index) ; motors.max_force.hip_knee.left(index) ; motors.max_force.hip.left(index)];
-%         lb = -ub;
-%         
-%                 
-%         [forcesLeft,resnorm,residualLeft,exitFlag,output,lambda] = lsqlin(jacobian.left, T, [], [], [], [], lb, ub, [], options);
-%         motors.forces.left(:,index) = forcesLeft;
-%         motors.status.left(:,index) = [resnorm; residualLeft; exitFlag; output.constrviolation];
-%         
-%         
-%         %% Right leg optimization
-%         options = optimset('Display','off');
-%         T = [dataset.torques.q(2,i) ; dataset.torques.q(4,i) ; dataset.torques.q(6,i)];
-%         ub = [motors.max_force.ankle.right(index) ; motors.max_force.knee_ankle.right(index) ; motors.max_force.knee.right(index) ; motors.max_force.hip_knee.right(index) ; motors.max_force.hip.right(index)];
-%         lb = -ub;
-%                 
-%         [forcesRight,resnorm,residualRight,exitFlag,output,lambda] = lsqlin(jacobian.right, T, [], [], [], [], lb, ub, [], options);
-%         motors.forces.right(:,index) = forcesRight;
-%         motors.status.right(:,index) = [resnorm; residualRight; exitFlag; output.constrviolation];
-%         
-%         
-%         if (max(abs(residualLeft))<1 && max(abs(residualRight))<1)
-%             motors.feasable(:,index)=1;
-%         else
-%             motors.feasable(:,index)=0;
-%         end
+        motors.velocity.hip.right(:,index)       = motor_velocities_right(5);
+        motors.velocity.knee.right(:,index)      = motor_velocities_right(3);
+        motors.velocity.ankle.right(:,index)     = motor_velocities_right(1);
+        motors.velocity.hip_knee.right(:,index)  = motor_velocities_right(4);
+        motors.velocity.knee_ankle.right(:,index)= motor_velocities_right(2);
+        
+        
         
         
         %% Optim for finding a feasable solution and power minimization
@@ -368,15 +307,11 @@ function [motors] = core(motors, dataset, start, step, stop)
         
         % Minimize power
         C_left = eye(5);
-        C_left(1,1) = motors.velocity.ankle.left(:,index);
-        C_left(2,2) = motors.velocity.knee_ankle.left(:,index);
-        C_left(3,3) = motors.velocity.knee.left(:,index);
-        C_left(4,4) = motors.velocity.hip_knee.left(:,index);
-        C_left(5,5) = motors.velocity.hip.left(:,index);
+
         
         % System to solve
         Aeq = jacobian.left;
-        beq = [dataset.torques.q(1,i) ; dataset.torques.q(3,i) ; dataset.torques.q(5,i)];
+        beq = [dataset.torques.q(5,i) ; dataset.torques.q(3,i) ; dataset.torques.q(1,i)];
         
         % Bounds
         ub = [motors.max_force.ankle.left(index) ; motors.max_force.knee_ankle.left(index) ; motors.max_force.knee.left(index) ; motors.max_force.hip_knee.left(index) ; motors.max_force.hip.left(index)];
@@ -386,14 +321,45 @@ function [motors] = core(motors, dataset, start, step, stop)
                 
         [forcesLeft,resnorm,residualLeft,exitFlagLeft,output,lambda] = lsqlin(C_left, zeros(5,1), [], [], Aeq, beq, lb, ub, [], options);
         
+        
+        
         % Motion is not feasable, optimize without boundaries
         if (exitFlagLeft ~= 1)
             motors.feasable(index)=0;            
-            [forcesLeft,resnorm,residualLeft,exitFlagLeft,output,lambda] = lsqlin(C_left, zeros(5,1), [], [], Aeq, beq, [], [], [], options);
+            [forcesLeft,resnorm,residualLeft,exitFlagLeft,output,lambda] = lsqlin(C_left, zeros(5,1), [], [], Aeq, beq, [], [], [], options);                       
         end
-        motors.forces.left(:,index) = forcesLeft;
-        motors.power.left(:,index) = abs(residualLeft * 9.80665);
+        
+       
+        
+        % Compute and store force and power
         motors.status.left(:,index) = [resnorm; residualLeft; exitFlagLeft; output.constrviolation];
+        motors.power.left(index)=0;        
+        if (motors.enable.hip)
+            motors.forces.hip.left(index)           = forcesLeft(5);
+            motors.power.hip.left(index)            = abs(forcesLeft(5) * motors.velocity.hip.left(index));            
+            motors.power.left(index)                = motors.power.left(index) + motors.power.hip.left(index);
+        end
+        if (motors.enable.knee)
+            motors.forces.knee.left(index)          = forcesLeft(3);            
+            motors.power.knee.left(index)           = abs(forcesLeft(3) * motors.velocity.knee.left(index));
+            motors.power.left(index)                = motors.power.left(index) + motors.power.knee.left(index);
+        end
+        if (motors.enable.ankle)
+            motors.forces.ankle.left(index)         = forcesLeft(1);    
+            motors.power.ankle.left(index)          = abs(forcesLeft(1) * motors.velocity.ankle.left(index));
+            motors.power.left(index)                = motors.power.left(index) + motors.power.ankle.left(index);
+        end
+        if (motors.enable.hip_knee)
+            motors.forces.hip_knee.left(index)      = forcesLeft(4);
+            motors.power.hip_knee.left(index)       = abs(forcesLeft(4) * motors.velocity.hip_knee.left(index));
+            motors.power.left(index)                = motors.power.left(index) + motors.power.hip_knee.left(index);
+        end
+        if (motors.enable.knee_ankle)
+            motors.forces.knee_ankle.left(index)    = forcesLeft(2);
+            motors.power.knee_ankle.left(index)     = abs(forcesLeft(2) * motors.velocity.knee_ankle.left(index));
+            motors.power.left(index)                = motors.power.left(index) + motors.power.knee_ankle.left(index);
+        end
+        
 
         
         
@@ -401,15 +367,10 @@ function [motors] = core(motors, dataset, start, step, stop)
        
         % Minimize power
         C_right = eye(5);
-        C_right(1,1) = motors.velocity.ankle.right(:,index);
-        C_right(2,2) = motors.velocity.knee_ankle.right(:,index);
-        C_right(3,3) = motors.velocity.knee.right(:,index);
-        C_right(4,4) = motors.velocity.hip_knee.right(:,index);
-        C_right(5,5) = motors.velocity.hip.right(:,index);
         
         % System to solve
         Aeq = jacobian.right;
-        beq = [dataset.torques.q(2,i) ; dataset.torques.q(4,i) ; dataset.torques.q(6,i)];
+        beq = [dataset.torques.q(6,i) ; dataset.torques.q(4,i) ; dataset.torques.q(2,i)];
         
         % Bounds
         ub = [motors.max_force.ankle.right(index) ; motors.max_force.knee_ankle.right(index) ; motors.max_force.knee.right(index) ; motors.max_force.hip_knee.right(index) ; motors.max_force.hip.right(index)];
@@ -424,39 +385,50 @@ function [motors] = core(motors, dataset, start, step, stop)
             motors.feasable(index)=0;            
             [forcesRight,resnorm,residualRight,exitFlagRight,output,lambda] = lsqlin(C_right, zeros(5,1), [], [], Aeq, beq, [], [], [], options);
         end
-            
-        motors.forces.right(:,index) = forcesRight;    
-        motors.power.right(:,index) = abs(residualRight * 9.80665);
+        
+        % Compute and store force and power
         motors.status.right(:,index) = [resnorm; exitFlagRight; output.constrviolation];
+        motors.power.right(index) = 0;        
+        if (motors.enable.hip)
+            motors.forces.hip.right(index)           = forcesRight(5);
+            motors.power.hip.right(index)            = abs(forcesRight(5) * motors.velocity.hip.right(index));
+            motors.power.right(index)                = motors.power.right(index) + motors.power.hip.right(index);
+        end
+        if (motors.enable.knee)
+            motors.forces.knee.right(index)          = forcesRight(3);            
+            motors.power.knee.right(index)           = abs(forcesRight(3) * motors.velocity.knee.right(index));
+            motors.power.right(index)                = motors.power.right(index) + motors.power.knee.right(index);
+        end
+        if (motors.enable.ankle)
+            motors.forces.ankle.right(index)         = forcesRight(1);
+            motors.power.ankle.right(index)          = abs(forcesRight(1) * motors.velocity.ankle.right(index));
+            motors.power.right(index)                = motors.power.right(index) + motors.power.ankle.right(index);
+        end
+        if (motors.enable.hip_knee)
+            motors.forces.hip_knee.right(index)      = forcesRight(4);    
+            motors.power.hip_knee.right(index)       = abs(forcesRight(4) * motors.velocity.hip_knee.right(index));
+            motors.power.right(index)                = motors.power.right(index) + motors.power.hip_knee.right(index);
+        end
+        if (motors.enable.knee_ankle)
+            motors.forces.knee_ankle.right(index)    = forcesRight(2);
+            motors.power.knee_ankle.right(index)     = abs(forcesRight(2) * motors.velocity.knee_ankle.right(index));
+            motors.power.right(index)                = motors.power.right(index) + motors.power.knee_ankle.right(index);
+        end
+
+        
+
+        
         
         %% Compute total motor power
-        
-        motors.power.total(index) = sum(motors.status.right(:,index)) + sum(motors.status.left(:,index));
+        motors.power.total(index) = sum(motors.power.left(index)) + sum(motors.power.right(index));
         
         
         
         %% Compute efficiency
-        if (index == 1)
-            motors.efficiency(index) = 0;
-        else            
-            motors.efficiency(index) = dataset.power.total(:,i) /(sum(motors.power.left(:,index)) + sum(motors.power.right(:,index)));
-        end
-        %motors.efficiency(index) = min([dataset.power.total(:,i) /(sum(motors.power.left(:,index)) + sum(motors.power.right(:,index))),1]);
-        
-%         %% Check if motion is feasable
-%         if (exitFlagLeft==1 && exitFlagRight==1)
-%             motors.feasable(index)=1;
-%             motors.efficiency(index) = (dataset.power.total(:,i) /(sum(motors.power.left(:,index)) + sum(motors.power.right(:,index))));
-%         else
-%             
-%             motors.feasable(index)=0;
-%             motors.efficiency(index) = 0;
-%             motors.forces.right(:,index) = zeros(5,1);
-%             motors.power.right(:,index) = zeros(5,1);
-%             motors.forces.left(:,index) = zeros(5,1);
-%             motors.power.left(:,index) = zeros(5,1);
-%         end
-%         
+        Pu = sum (dataset.power.effective(:,i));
+        Pa = motors.power.total(index);
+        motors.efficiency(index) = Pu / Pa;
+               
         
         %% Next step
         index = index + 1;
