@@ -8,26 +8,19 @@ addpath ('functions/')
 
 %% Load dataset
 %% 1.1 Straight walking at 1.0 m/s
-%load ('dataset/robibio/1.1.mat');
+load ('dataset/robibio/1.1.mat');
 
 %% 2.3 Straight running at 4.0 m/s
 %load ('dataset/robibio/2.3.mat');
 
-% 4 Transition from 0.0 m/s to 4.0 m/s
-load ('dataset/robibio/4.mat');
+%% 4 Transition from 0.0 m/s to 4.0 m/s
+%load ('dataset/robibio/4.mat');
 
 %% 6 Squats
 %load ('dataset/robibio/6.mat');
 
 
 %% Motor parameters
-
-
-x=[ -80     300     -80,    400     50 ...
-    80      350     80      400     0  ...
-    80      310     -60     50      0 ...
-    -80     50      -80     300     0 ...
-    -80     50      -200    0       0];
 
 motors.parameters.hip.trunk         = [-80; 300];
 motors.parameters.hip.thigh         = [-80; 400];
@@ -61,12 +54,9 @@ motors.enable.ankle = true;
 motors.enable.hip_knee = true;
 motors.enable.knee_ankle = true;
 
-%% Set motor position from vector x (optimization output)
-%x = [46.4499987245664 378.076271326647 -79.0353612646276 379.772065263859 7.62618283297715 57.4651999237865 392.472150843386 53.0133152314646 364.720684637766 63.0882410207131 67.4514895895606 286.726773047387 -136.263503792503 8.24278647500071 -6.67982822254056 -63.6612378658841 -50.4990817634458 -65.2743590713349 278.023086344015 -10.7318805069168 7.57515516443146 70.0318792933904 -197.395802622857 44.3586492953258 -4.01412457806377];
-%x = [-21.71	491.18	-79.99	476.89	-35.68	-40.71	304.06	76.54	437.40	68.89	-79.44	254.39	-41.23	130.00	97.54	-79.64	-79.28	-5.08	278.03	-22.75	-78.72	78.24	-40.31	91.83	-7.51];
-%motors = appendX2motors(x, motors);
 
 disp ('Running core, it may take a while...'); tic
+%motors = core (motors, dataset, 1030, 1, 1250); 
 %motors = core (motors, dataset, 10000, 1, 12000); 
 motors = core (motors, dataset, 1, 1, dataset.frames);
 toc
@@ -75,9 +65,8 @@ toc
 fprintf('Feasability: %.2f%%\n', mean(motors.feasable)*100 );
 
 %% Compute efficiency
-power_motion = sum (dataset.power.effective(motors.start : motors.step : motors.stop));
-power_motor = (sum(motors.power.total));
-fprintf('Efficiency: %.2f\n',power_motion/power_motor);
+fprintf('Efficiency real: %.2f\n',mean(motors.efficiency));
+fprintf('Efficiency real: %.2f\n',mean(max(0,motors.efficiency)));
 
 
 
@@ -96,37 +85,45 @@ end
 
 
 %% Plot motor data
-figure();
-plot_motor_length(motors);
+% figure;
+% plot_knee_torque_velocity(motors,dataset);
 
-figure();
-plot_motor_velocity(motors);
+figure;
+plot_joint_power_positive_vs_negative(motors, dataset);
+% 
+% figure;
+% plot_joint_cumulated_power_positive_vs_negative(motors, dataset);
+% 
+% figure();
+% plot_motor_length(motors);
+% 
+% figure();
+% plot_motor_velocity(motors);
 
 figure();
 plot_motor_efficiency(motors, dataset);
-
-figure; 
-plot_motor_optim_residual(motors);
-
-figure();
-plot_motor_force(motors);
-
+% 
+% figure; 
+% plot_motor_optim_residual(motors);
+% 
+% figure();
+% plot_motor_force(motors);
+% 
+% figure();
+% plot_motor_total_power(motors, dataset);
+% 
 % figure();
 % plot_motor_max_force(motors);
 % 
 % figure; 
 % plot_motor_power(motors);
 % 
-% 
 % figure();
 % plot_motor_torques(motors, dataset);
 % 
 % figure();
-% plot_motor_force(motors);
-% 
-% figure();
 % plot_motor_state(motors);
-% 
+
 % figure();
 % plot_motor_torque_hip(motors, dataset);
 % 
@@ -135,7 +132,7 @@ plot_motor_force(motors);
 % 
 % figure();
 % plot_motor_torque_ankle(motors, dataset);
-% 
+
 
 
  

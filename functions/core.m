@@ -286,7 +286,7 @@ function [motors] = core(motors, dataset, start, step, stop)
         motors.velocity.hip_knee.left(:,index)  = motor_velocities_left(4);
         motors.velocity.knee_ankle.left(:,index)= motor_velocities_left(2);
         
-        
+                
         dqdt_right = [dataset.trajectories.dqdt(6,i) ; dataset.trajectories.dqdt(4,i) ; dataset.trajectories.dqdt(2,i)];
         motor_velocities_right = transpose(jacobian.right) * dqdt_right;
         
@@ -306,8 +306,8 @@ function [motors] = core(motors, dataset, start, step, stop)
         motors.feasable(index)=1;
         
         % Minimize power
-        C_left = eye(5);
-
+        %C_left = eye(5);
+        C_left = diag(motor_velocities_left);
         
         % System to solve
         Aeq = jacobian.left;
@@ -366,7 +366,8 @@ function [motors] = core(motors, dataset, start, step, stop)
         %% Right leg minimize power
        
         % Minimize power
-        C_right = eye(5);
+        %C_right = eye(5);
+        C_right = diag(motor_velocities_right);
         
         % System to solve
         Aeq = jacobian.right;
@@ -416,20 +417,14 @@ function [motors] = core(motors, dataset, start, step, stop)
         end
 
         
-
-        
-        
-        %% Compute total motor power
-        motors.power.total(index) = sum(motors.power.left(index)) + sum(motors.power.right(index));
-        
-        
+       
+        %% Compute total motor power        
+        motors.power.output(index) = sum (dataset.power.q(:,i));
+        motors.power.input(index) = sum(motors.power.left(index)) + sum(motors.power.right(index));
         
         %% Compute efficiency
-        Pu = sum (dataset.power.effective(:,i));
-        Pa = motors.power.total(index);
-        motors.efficiency(index) = Pu / Pa;
-               
-        
+        motors.efficiency(index) = motors.power.output(index) / motors.power.input(index);
+
         %% Next step
         index = index + 1;
     end

@@ -34,7 +34,7 @@ scatter (reshape(ds_52.dataset.trajectories.q(1:2,:),1,[]) , abs(reshape(ds_52.d
 scatter (reshape(ds_6.dataset.trajectories.q(1:2,:),1,[]) , abs(reshape(ds_6.dataset.torques.q(1:2,:), 1, [])),'filled','SizeData',scatterSize);
 
 alpha(.02);
-grid on;
+%grid on;
 xlabel('q [rad]');
 ylabel('\Gamma [N.m]');
 title ('\Gamma=f(q) [Hip]');
@@ -55,7 +55,7 @@ scatter (reshape(ds_52.dataset.trajectories.q(3:4,:),1,[]) , abs(reshape(ds_52.d
 scatter (reshape(ds_6.dataset.trajectories.q(3:4,:),1,[]) , abs(reshape(ds_6.dataset.torques.q(3:4,:), 1, [])),'filled','SizeData',scatterSize);
 
 alpha(.02);
-grid on;
+%grid on;
 xlabel('q [rad]');
 ylabel('\Gamma [N.m]');
 title ('\Gamma=f(q) [Knee]');
@@ -75,7 +75,7 @@ scatter (reshape(ds_52.dataset.trajectories.q(5:6,:),1,[]) , abs(reshape(ds_52.d
 scatter (reshape(ds_6.dataset.trajectories.q(5:6,:),1,[]) , abs(reshape(ds_6.dataset.torques.q(5:6,:), 1, [])),'filled','SizeData',scatterSize);
 
 alpha(.02);
-grid on;
+%grid on;
 xlabel('q [rad]');
 ylabel('\Gamma [N.m]');
 title ('\Gamma=f(q) [Ankle]');

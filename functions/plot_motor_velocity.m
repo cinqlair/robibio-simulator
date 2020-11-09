@@ -7,7 +7,7 @@ function nPlots = plot_motor_length(motors, index)
         subplot (nPlots,1,plotIndex); hold on; grid on;
         plot (motors.velocity.hip.left, 'r');
         plot (motors.velocity.hip.right, 'b');
-        title ('Hip motor velocity [mm]');
+        title ('Hip motor velocity [m/s]');
         plotIndex=plotIndex+1; 
     end
 
@@ -15,7 +15,7 @@ function nPlots = plot_motor_length(motors, index)
         subplot (nPlots,1,plotIndex); hold on; grid on;
         plot (motors.velocity.knee.left, 'r');
         plot (motors.velocity.knee.right, 'b');
-        title ('Knee motor velocity [mm]');
+        title ('Knee motor velocity [m/s]');
         plotIndex=plotIndex+1;
     end
     
@@ -23,7 +23,7 @@ function nPlots = plot_motor_length(motors, index)
         subplot (nPlots,1,plotIndex); hold on; grid on;
         plot (motors.velocity.ankle.left, 'r');
         plot (motors.velocity.ankle.right, 'b');
-        title ('Ankle motor velocity [mm]');
+        title ('Ankle motor velocity [m/s]');
         plotIndex=plotIndex+1;
     end
     
@@ -31,7 +31,7 @@ function nPlots = plot_motor_length(motors, index)
         subplot (nPlots,1,plotIndex); hold on; grid on;
         plot (motors.velocity.hip_knee.left, 'r');
         plot (motors.velocity.hip_knee.right, 'b');
-        title ('Hip-knee motor velocity [mm]');
+        title ('Hip-knee motor velocity [m/s]');
         plotIndex=plotIndex+1;
     end
     
@@ -39,7 +39,7 @@ function nPlots = plot_motor_length(motors, index)
         subplot (nPlots,1,plotIndex); hold on; grid on;
         plot (motors.velocity.knee_ankle.left, 'r');
         plot (motors.velocity.knee_ankle.right, 'b');
-        title ('Knee-ankle motor velocity [mm]');
+        title ('Knee-ankle motor velocity [m/s]');
         plotIndex=plotIndex+1;
     end
 end

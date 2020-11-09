@@ -106,13 +106,13 @@ addpath ('../functions')
 
 
 %% 5.1 Avoiding a long box obstacle
-data_title = 'Avoiding a long box obstacle';
-id = '5.1';
-output_file = '5.1.mat';
-data = load('../dataset/humod-data/5.1.mat');
-torques = load('../dataset/newton-euler-torques/5.1_Torques.mat');
-start_time = 20;
-end_time = 145;
+% data_title = 'Avoiding a long box obstacle';
+% id = '5.1';
+% output_file = '5.1.mat';
+% data = load('../dataset/humod-data/5.1.mat');
+% torques = load('../dataset/newton-euler-torques/5.1_Torques.mat');
+% start_time = 20;
+% end_time = 145;
 
 %% 5.2 Avoiding a long box obstacle
 % data_title = 'Avoiding a long box obstacle';
@@ -418,9 +418,8 @@ for step = 1+start_time*frame_rate : 1 : end_time*frame_rate
     
     % Store power
     dataset.power.q(:,index) = dataset.trajectories.dqdt(:,index).*dataset.torques.q(:,index);
-    dataset.power.q_effective(:,index) = max (0, dataset.trajectories.dqdt(:,index).*dataset.torques.q(:,index));
     dataset.power.total(:,index) = sum(dataset.power.q(:,index));
-    dataset.power.effective(:,index) = sum(dataset.power.q_effective(:,index));
+
     
     % Store transformation matrices
     dataset.transformation_matrices.hip_to_knee_left(:,index)   = reshape(Transformation_2D.Hip_to_Knee_Left, [16,1]);

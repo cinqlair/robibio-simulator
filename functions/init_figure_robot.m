@@ -23,16 +23,16 @@ function [handle] = init_figure_robot()
 
 %% Motors
 
-    handle.motor.Left.Hip           = line ([0,0], [0,0], 'LineWidth', 3, 'Color', [1,0,0,0.2], 'Marker', '.');
-    handle.motor.Right.Hip          = line ([0,0], [0,0], 'LineWidth', 3, 'Color', [0,0,1,0.2], 'Marker', '.');
-    handle.motor.Left.Knee          = line ([0,0], [0,0], 'LineWidth', 3, 'Color', [1,0,0,0.2], 'Marker', '.');
-    handle.motor.Right.Knee         = line ([0,0], [0,0], 'LineWidth', 3, 'Color', [0,0,1,0.2], 'Marker', '.');
-    handle.motor.Left.Ankle         = line ([0,0], [0,0], 'LineWidth', 3, 'Color', [1,0,0,0.2], 'Marker', '.');
-    handle.motor.Right.Ankle        = line ([0,0], [0,0], 'LineWidth', 3, 'Color', [0,0,1,0.2], 'Marker', '.');
-    handle.motor.Left.Hip_Knee      = line ([0,0], [0,0], 'LineWidth', 3, 'Color', [1,0,0,0.2], 'Marker', '.');
-    handle.motor.Right.Hip_Knee     = line ([0,0], [0,0], 'LineWidth', 3, 'Color', [0,0,1,0.2], 'Marker', '.');
-    handle.motor.Left.Knee_Ankle    = line ([0,0], [0,0], 'LineWidth', 3, 'Color', [1,0,0,0.2], 'Marker', '.');
-    handle.motor.Right.Knee_Ankle   = line ([0,0], [0,0], 'LineWidth', 3, 'Color', [0,0,1,0.2], 'Marker', '.');
+    handle.motor.Left.Hip           = line ([0,0], [0,0], 'LineWidth', 5, 'Color', [1,0,0,0.2], 'Marker', '.');
+    handle.motor.Right.Hip          = line ([0,0], [0,0], 'LineWidth', 5, 'Color', [0,0,1,0.2], 'Marker', '.');
+    handle.motor.Left.Knee          = line ([0,0], [0,0], 'LineWidth', 5, 'Color', [1,0,0,0.2], 'Marker', '.');
+    handle.motor.Right.Knee         = line ([0,0], [0,0], 'LineWidth', 5, 'Color', [0,0,1,0.2], 'Marker', '.');
+    handle.motor.Left.Ankle         = line ([0,0], [0,0], 'LineWidth', 5, 'Color', [1,0,0,0.2], 'Marker', '.');
+    handle.motor.Right.Ankle        = line ([0,0], [0,0], 'LineWidth', 5, 'Color', [0,0,1,0.2], 'Marker', '.');
+    handle.motor.Left.Hip_Knee      = line ([0,0], [0,0], 'LineWidth', 5, 'Color', [1,0,0,0.2], 'Marker', '.');
+    handle.motor.Right.Hip_Knee     = line ([0,0], [0,0], 'LineWidth', 5, 'Color', [0,0,1,0.2], 'Marker', '.');
+    handle.motor.Left.Knee_Ankle    = line ([0,0], [0,0], 'LineWidth', 5, 'Color', [1,0,0,0.2], 'Marker', '.');
+    handle.motor.Right.Knee_Ankle   = line ([0,0], [0,0], 'LineWidth', 5, 'Color', [0,0,1,0.2], 'Marker', '.');
     
 %% Torques   
 
