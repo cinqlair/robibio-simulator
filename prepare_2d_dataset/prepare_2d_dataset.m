@@ -58,13 +58,13 @@ addpath ('../functions')
 
 
 %% 2.1 Straight running at 2.0 m/s
-% data_title = 'Straight running at 2.0 m/s';
-% id = '2.1';
-% output_file = '2.1.mat';
-% data = load('../dataset/humod-data/2.1.mat');
-% torques = load('../dataset/newton-euler-torques/2.1_Torques.mat');
-% start_time = 20;
-% end_time = 85;
+data_title = 'Straight running at 2.0 m/s';
+id = '2.1';
+output_file = '2.1.mat';
+data = load('../dataset/humod-data/2.1.mat');
+torques = load('../dataset/newton-euler-torques/2.1_Torques.mat');
+start_time = 20;
+end_time = 85;
 
 %% 2.2 Straight running at 3.0 m/s
 % data_title = 'Straight running at 3.0 m/s';
